@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
-  // Define days of the week
+  // days of the week
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-  // Schedule state: an object with keys as day names and values as an array of 6 slots
+  // an object with keys as day names and values as an array of 4 slots
   const [schedule, setSchedule] = useState({});
 
   // Fetch schedule from the backend on initial render
@@ -55,14 +55,14 @@ function App() {
           <tr>
             <th>Day</th>
             <th>Driver</th>
-            <th colSpan="5">Packers</th>
+            <th colSpan="3">Packers</th>
           </tr>
         </thead>
         <tbody>
           {days.map((day) => (
             <tr key={day}>
               <td>{day}</td>
-              {Array.from({ length: 6 }).map((_, slot) => (
+              {Array.from({ length: 4 }).map((_, slot) => (
                 <td
                   key={slot}
                   data-day={day}
