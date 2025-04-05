@@ -11,7 +11,7 @@ function App() {
   // Fetch schedule from the backend on initial render
   const fetchSchedule = async () => {
     try {
-      const response = await fetch('/schedule');
+        const response = await fetch('http://localhost:3001/schedule');
       const data = await response.json();
       setSchedule(data);
     } catch (error) {
@@ -29,7 +29,7 @@ function App() {
     if (!name) return;
 
     try {
-      const response = await fetch('/signup', {
+        const response = await fetch('http://localhost:3001/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
