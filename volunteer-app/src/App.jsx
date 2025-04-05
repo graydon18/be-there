@@ -49,12 +49,13 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Weekly Volunteer Schedule</h1>
+      <h1>Be There</h1>
       <table>
         <thead>
           <tr>
             <th>Day</th>
-            <th colSpan="6">Slots</th>
+            <th>Driver</th>
+            <th colSpan="5">Packers</th>
           </tr>
         </thead>
         <tbody>
