@@ -226,7 +226,7 @@ function App() {
                 disabled={!isDriverScheduled(day)}  
                 onClick={() => handleBackupButton(day, "driver")}
                 >
-                Sign Up as a Backup Driver
+                Sign Up as a Backup Driver ({schedule[day]?.backupDrivers?.length || 0})
               </button>
             ))}
           </div>
@@ -237,7 +237,7 @@ function App() {
                 disabled={!arePackersScheduled(day)}  
                 onClick={() => handleBackupButton(day, "packer")}
                 >
-                Sign Up as a Backup Packer
+                Sign Up as a Backup Packer ({schedule[day]?.backupPackers?.length || 0})
               </button>
             ))}
           </div>
