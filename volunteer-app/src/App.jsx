@@ -26,15 +26,19 @@ function App() {
 
   const handleSlotClick = async (day, slot) => {
     if (!user) return alert("Please log in first.");
-    if (schedule[day] && schedule[day][slot] !== "") return alert("This slot is already taken.");
-    if (schedule[day] && (schedule[day][0] == user.name || schedule[day][1] == user.name || schedule[day][2] == user.name || schedule[day][3] == user.name))
+    if (schedule[day] && schedule[day][slot] !== null) return alert("This slot is already taken.");
+    if (schedule[day] && 
+        (schedule[day][0]?.username == user.username || 
+        schedule[day][1]?.username == user.username || 
+        schedule[day][2]?.username == user.username || 
+        schedule[day][3]?.username == user.username))
         return alert("You're already scheduled for this day.");
 
     try {
       const response = await fetch('http://localhost:3001/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ day, slot, name: user.name })
+        body: JSON.stringify({ day, slot, name: user.name, username: user.username })
       });
       const data = await response.json();
       if (data.success) {
@@ -48,7 +52,7 @@ function App() {
   };
 
   const isDriverScheduled = (day) => {
-    return schedule[day] && schedule[day][0] !== ""; 
+    return schedule[day] && schedule[day][0]; 
    };
 
    const arePackersScheduled = (day) => {
@@ -127,7 +131,7 @@ function App() {
                    onClick={() => handleSlotClick(day, slot)}
                    style={{ cursor: 'pointer' }}
                  >
-                    {schedule[day] && schedule[day][slot] ? schedule[day][slot] : '[Available]'}
+                    {schedule[day] && schedule[day][slot] ? schedule[day][slot].name : '[Available]'}
                   </td>
               ))}
             </tr>

@@ -8,13 +8,13 @@ app.use(express.json());
 
 // In-memory schedule: 7 days, each with 6 slots
 let schedule = {
-  Monday: Array(6).fill(""),
-  Tuesday: Array(6).fill(""),
-  Wednesday: Array(6).fill(""),
-  Thursday: Array(6).fill(""),
-  Friday: Array(6).fill(""),
-  Saturday: Array(6).fill(""),
-  Sunday: Array(6).fill(""),
+  Monday: Array(6).fill(null),
+  Tuesday: Array(6).fill(null),
+  Wednesday: Array(6).fill(null),
+  Thursday: Array(6).fill(null),
+  Friday: Array(6).fill(null),
+  Saturday: Array(6).fill(null),
+  Sunday: Array(6).fill(null),
 };
 
 let users = [];
@@ -42,9 +42,9 @@ app.post("/login", (req, res) => {
 
 // POST /signup
 app.post("/signup", (req, res) => {
-  const { day, slot, name } = req.body;
+  const { day, slot, name, username } = req.body;
 
-  if (!day || slot === undefined || !name) {
+  if (!day || slot === undefined || !name || !username) {
     return res.json({ success: false, error: "Invalid input." });
   }
 
@@ -56,7 +56,7 @@ app.post("/signup", (req, res) => {
     return res.json({ success: false, error: "Slot already taken." });
   }
 
-  schedule[day][slot] = name;
+  schedule[day][slot] = { name: name, username: username };
   return res.json({ success: true, schedule });
 });
 
