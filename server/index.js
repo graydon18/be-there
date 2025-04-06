@@ -6,15 +6,43 @@ const PORT = 3001;
 app.use(cors());
 app.use(express.json());
 
-// In-memory schedule: 7 days, each with 6 slots
+// In-memory schedule: 7 days, each with 4 slots
 let schedule = {
-  Monday: Array(4).fill(null),
-  Tuesday: Array(4).fill(null),
-  Wednesday: Array(4).fill(null),
-  Thursday: Array(4).fill(null),
-  Friday: Array(4).fill(null),
-  Saturday: Array(4).fill(null),
-  Sunday: Array(4).fill(null),
+  Monday: { 
+    slots: Array(4).fill(null),
+    backupDrivers: [],
+    backupPackers: []
+  },
+  Tuesday: { 
+    slots: Array(4).fill(null),
+    backupDrivers: [],
+    backupPackers: []
+  },
+  Wednesday: { 
+    slots: Array(4).fill(null),
+    backupDrivers: [],
+    backupPackers: []
+  },
+  Thursday: { 
+    slots: Array(4).fill(null),
+    backupDrivers: [],
+    backupPackers: []
+  },
+  Friday: { 
+    slots: Array(4).fill(null),
+    backupDrivers: [],
+    backupPackers: []
+  },
+  Saturday: { 
+    slots: Array(4).fill(null),
+    backupDrivers: [],
+    backupPackers: []
+  },
+  Sunday: { 
+    slots: Array(4).fill(null),
+    backupDrivers: [],
+    backupPackers: []
+  },
 };
 
 let users = [];
@@ -57,22 +85,55 @@ app.post("/register", (req, res) => {
 
 // POST /signup
 app.post("/signup", (req, res) => {
-  const { day, slot, name, username } = req.body;
-
-  if (!day || slot === undefined || !name || !username) {
-    return res.json({ success: false, error: "Invalid input." });
-  }
-
-  if (!schedule[day] || slot < 0 || slot >= schedule[day].length) {
-    return res.json({ success: false, error: "Invalid day or slot." });
-  }
-
-  if (schedule[day][slot]) {
-    return res.json({ success: false, error: "Slot already taken." });
-  }
-
-  schedule[day][slot] = { name: name, username: username };
-  return res.json({ success: true, schedule });
+    const { day, slot, name, username } = req.body;
+  
+    if (!day || slot === undefined || !name || !username) {
+      return res.json({ success: false, error: "Invalid input." });
+    }
+  
+    if (!schedule[day] || slot < 0 || slot >= schedule[day].length) {
+      return res.json({ success: false, error: "Invalid day or slot." });
+    }
+  
+    if (schedule[day].slots[slot]) {
+      return res.json({ success: false, error: "Slot already taken." });
+    }
+  
+    schedule[day].slots[slot] = { name: name, username: username };
+    return res.json({ success: true, schedule });
+});
+  
+app.post("/signup-backup", (req, res) => {
+    const { day, type, name, username } = req.body;
+    
+    if (!day || !type || !username || !name || !schedule[day]) {
+        return res.json({ success: false, error: "Invalid input." });
+    }
+    
+    const daySchedule = schedule[day];
+    
+    const isAlreadyPrimary = daySchedule.slots.some(slot => slot?.username === username);
+    
+    const isAlreadyInQueue = type === "driver"
+        ? daySchedule.backupDrivers.some(u => u.username === username)
+        : daySchedule.backupPackers.some(u => u.username === username);
+    
+    if (isAlreadyPrimary) {
+        return res.json({ success: false, error: `Youre already a primary volunteer for this ${day}.` });
+    }
+    
+    if (isAlreadyInQueue) {
+        return res.json({ success: false, error: `You're already signed up as a backup ${type}.` });
+    }
+    
+    const user = { name, username };
+    if (type === "driver") {
+        daySchedule.backupDrivers.push(user);
+    } else {
+        daySchedule.backupPackers.push(user);
+    }
+    
+    return res.json({ success: true, schedule });
 });
 
 app.listen(PORT, () => {

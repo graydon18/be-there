@@ -31,13 +31,8 @@ function App() {
 
   const handleSlotClick = async (day, slot) => {
     if (!user) return alert("Please log in first.");
-    if (schedule[day] && schedule[day][slot] !== null) return alert("This slot is already taken.");
-    if (schedule[day] && 
-        (schedule[day][0]?.username == user.username || 
-        schedule[day][1]?.username == user.username || 
-        schedule[day][2]?.username == user.username || 
-        schedule[day][3]?.username == user.username))
-        return alert("You're already scheduled for this day.");
+    if (schedule[day] && schedule[day].slots[slot] !== null) return alert("This slot is already taken.");
+    if (schedule[day]?.slots?.some(slot => slot?.username === user.username)) return alert("You're already scheduled for this day.");
 
     try {
       const response = await fetch('http://localhost:3001/signup', {
@@ -56,12 +51,30 @@ function App() {
     }
   };
 
-  const isDriverScheduled = (day) => {
-    return schedule[day] && schedule[day][0]; 
+  const handleBackupButton = async (day, type) => {
+    try {
+      const response = await fetch('http://localhost:3001/signup-backup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ day, type, name: user.name, username: user.username })
+      });
+      const data = await response.json();
+      if (data.success) {
+        setSchedule(data.schedule);
+      } else {
+        alert(data.error);
+      }
+    } catch (err) {
+      console.error(`Error signing up as backup ${type}:`, err);
+    }
   };
 
-  const arePackersScheduled = (day) => {
-    return schedule[day] && schedule[day][1] && schedule[day][2] && schedule[day][3];
+  const isDriverScheduled = (day) => {
+    return schedule[day] && schedule[day].slots[0]; 
+   };
+
+   const arePackersScheduled = (day) => {
+    return schedule[day] && schedule[day].slots[1] && schedule[day].slots[2] && schedule[day].slots[3];
   };
 
   const handleAuthSubmit = async (e) => {
@@ -161,7 +174,7 @@ function App() {
                    onClick={() => handleSlotClick(day, slot)}
                    style={{ cursor: 'pointer' }}
                  >
-                    {schedule[day] && schedule[day][slot] ? schedule[day][slot].name : '[Available]'}
+                   {schedule[day] && schedule[day].slots[slot] ? schedule[day].slots[slot].name : '[Available]'}
                   </td>
               ))}
             </tr>
@@ -175,7 +188,7 @@ function App() {
               <button 
                 key={`driver-${day}`}
                 disabled={!isDriverScheduled(day)}  
-                onClick={() => alert(`Sign up as Backup Driver for ${day}`)}
+                onClick={() => handleBackupButton(day, "driver")}
                 >
                 Sign Up as a Backup Driver
               </button>
@@ -186,7 +199,7 @@ function App() {
               <button 
                 key={`packer-${day}`}
                 disabled={!arePackersScheduled(day)}  
-                onClick={() => alert(`Sign up as Backup Packer for ${day}`)}
+                onClick={() => handleBackupButton(day, "packer")}
                 >
                 Sign Up as a Backup Packer
               </button>
