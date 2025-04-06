@@ -17,10 +17,28 @@ let schedule = {
   Sunday: Array(6).fill(""),
 };
 
+let users = [];
+
 // GET /schedule
 app.get("/schedule", (req, res) => {
   res.json(schedule);
 });
+
+app.post("/login", (req, res) => {
+    const { name, username } = req.body;
+  
+    if (!name || !username) {
+      return res.json({ success: false, error: "Name and username are required." });
+    }
+  
+    const exists = users.find(u => u.username === username);
+    if (exists) {
+      return res.json({ success: false, error: "Username already taken." });
+    }
+  
+    users.push({ username, name });
+    return res.json({ success: true, name, username });
+  });
 
 // POST /signup
 app.post("/signup", (req, res) => {
