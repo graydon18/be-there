@@ -32,9 +32,9 @@ function App() {
 
   const handleSlotClick = async (day, slot) => {
     if (!user) return alert("Please log in first.");
-
+  
     const clickedSlot = schedule[day]?.slots?.[slot];
-
+  
     if (clickedSlot !== null) {
       if (clickedSlot.username === user.username) {
         const confirmDelete = window.confirm("Do you want to delete yourself from this slot?");
@@ -60,11 +60,19 @@ function App() {
       }
       return;
     }
-
+  
     if (schedule[day]?.slots?.some(s => s?.username === user.username)) {
       return alert("You're already scheduled for this day.");
     }
-
+  
+    const isInBackupQueue =
+      schedule[day]?.backupDrivers?.some(u => u.username === user.username) ||
+      schedule[day]?.backupPackers?.some(u => u.username === user.username);
+  
+    if (isInBackupQueue) {
+      return alert("You are already in a backup queue for today. Please remove yourself first.");
+    }
+  
     const confirmRegister = window.confirm(`Do you want to register yourself on ${day}`);
     if (confirmRegister) {
       try {
@@ -84,6 +92,7 @@ function App() {
       }
     }
   };
+  
 
   const handleBackupButton = async (day, type) => {
     try {
