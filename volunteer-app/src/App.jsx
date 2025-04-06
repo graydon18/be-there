@@ -65,21 +65,24 @@ function App() {
       return alert("You're already scheduled for this day.");
     }
 
-    try {
-      const response = await fetch('http://localhost:3001/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ day, slot, name: user.name, username: user.username })
-      });
-      const data = await response.json();
-      if (data.success) {
-        setSchedule(data.schedule);
-      } else {
-        alert(data.error);
-      }
-    } catch (error) {
-      console.error('Error signing up:', error);
-    }
+    const confirmRegister = window.confirm(`Do you want to register yourself on ${day}`);
+        if (confirmRegister) {
+            try {
+                const response = await fetch('http://localhost:3001/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ day, slot, name: user.name, username: user.username })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    setSchedule(data.schedule);
+                } else {
+                    alert(data.error);
+                }
+            } catch (error) {
+                console.error('Error signing up:', error);
+            }
+        }
   };
 
   const handleBackupButton = async (day, type) => {
