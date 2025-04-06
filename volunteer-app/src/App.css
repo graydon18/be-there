@@ -13,6 +13,11 @@
     align-items: center;
 }
 
+.login-signup-switch {
+    position: relative;
+    top: -16px; 
+}
+
 input {
     width: 200px;
     font-size: 18px;

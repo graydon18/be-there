@@ -171,7 +171,8 @@ function App() {
               {isSignup ? "Sign Up" : "Login"}
             </motion.button>
           </form>
-          <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={() => {
+          <motion.button className="login-signup-switch" 
+            whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={() => {
             setIsSignup(!isSignup);
             setLoginError('');
           }}>
