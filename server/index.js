@@ -135,7 +135,13 @@ app.post("/signup-backup", (req, res) => {
   }
   
   if (isAlreadyInQueue) {
-      return res.json({ success: false, error: `You're already signed up as a backup ${type}.` });
+    if (type === "driver") {
+        daySchedule.backupDrivers = daySchedule.backupDrivers.filter(u => u.username !== username);
+      } else {
+        daySchedule.backupPackers = daySchedule.backupPackers.filter(u => u.username !== username);
+      }
+  
+      return res.json({ success: true, schedule });
   }
   
   const user = { name, username };

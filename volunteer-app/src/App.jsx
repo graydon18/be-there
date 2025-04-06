@@ -252,7 +252,7 @@ function App() {
                   onClick={() => handleBackupButton(day, "driver")}
                   style={{ backgroundColor: isUserInDriverQueue ? 'crimson' : undefined }}
                 >
-                  Sign Up as a Backup Driver ({schedule[day]?.backupDrivers?.length || 0})
+                  {isUserInDriverQueue ? "Remove Yourself from the Queue" : "Sign Up as a Backup Driver"} ({schedule[day]?.backupDrivers?.length || 0})
                 </motion.button>
               );
             })}
@@ -269,7 +269,7 @@ function App() {
                   onClick={() => handleBackupButton(day, "packer")}
                   style={{ backgroundColor: isUserInPackerQueue ? 'crimson' : undefined }}
                 >
-                  Sign Up as a Backup Packer ({schedule[day]?.backupPackers?.length || 0})
+                  {isUserInPackerQueue ? "Remove Yourself from the Queue" : "Sign Up as a Backup Packer"} ({schedule[day]?.backupPackers?.length || 0})
                 </motion.button>
               );
             })}
