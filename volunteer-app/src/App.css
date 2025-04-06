@@ -3,63 +3,90 @@
     padding: 20px;
   }
 
-  @font-face {
+.login-container {
+    text-align: center;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input {
+    width: 200px;
+    font-size: 18px;
+    margin-bottom: 20px;
+    background-color: #d1e6d4;
+    border-color: #99b59c;
+    color: #000000
+}
+
+@font-face {
     font-family: lemonMilk;
     src: url(./assets/fonts/lemon_milk_bold.otf);
     font-weight: bold;
   }
 
-  h1 {
+h1 {
     font-family: lemonMilk;
     font-weight: bold;
     font-size: 5em;
     line-height: 1;
   }
 
-  .table-container {
+.subheading {
+    font-size: 1.5em;
+    font-weight: 500;
+    margin-top: -40px;
+    margin-bottom: 20px;
+    color: #006a33;
+  }
+
+.table-container {
     display: flex;
     align-items: flex-start;
   }
   
-  table {
+table {
     margin: 0 auto;
     border-collapse: collapse;
   }
   
-  table, th, td {
-    border: 2px solid #333;
+table, th, td {
+    border: 2px solid #0f2c16;
   }
   
-  th, td {
+th, td {
     padding: 10px;
     text-align: center;
   }
   
-  td {
+td {
     width: 150px;
     height: 50px;
     cursor: pointer;
   }
 
-  .button-columns {
+.button-columns {
     display: flex;
     flex-direction: row;
     margin-left: 20px;
     margin-top: 65px
   }
 
-  .backup-driver {
+.backup-driver {
     display: flex;
     flex-direction: column;
   }
 
-  .backup-packer {
+.backup-packer {
     display: flex;
     flex-direction: column;
     margin-left: 20px;
   }
 
-  button {
+button {
     padding: 10px;
     margin-bottom: 36px;
     font-size: 14px;
@@ -70,11 +97,11 @@
     border-radius: 5px;
   }
   
-  button:hover {
+button:hover {
     background-color: #006a33;
   }
 
-  button:disabled {
+button:disabled {
     background-color: #d1e6d4;      
     color: #546e54;                 
     cursor: not-allowed;         

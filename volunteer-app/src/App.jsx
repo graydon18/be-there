@@ -76,8 +76,9 @@ function App() {
   if (!user) {
     return (
       <div className="login-container">
-        <h1>Be There Login</h1>
-        <form onSubmit={handleLoginSubmit}>
+        <h1>Be There</h1>
+        <h2 className="subheading">Please login with your username. If you are signing up, create a username for your account!</h2>
+        <form className="login-form" onSubmit={handleLoginSubmit}>
           <input
             type="text"
             placeholder="Full Name"
@@ -101,8 +102,8 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Be There - Welcome {user.name}!</h1>
-
+      <h1>Be There</h1>
+      <h2 className="subheading">Welcome {user.name}!</h2>
       <div className="table-container">
       <table>
         <thead>
