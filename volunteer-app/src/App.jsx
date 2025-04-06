@@ -27,6 +27,8 @@ function App() {
   const handleSlotClick = async (day, slot) => {
     if (!user) return alert("Please log in first.");
     if (schedule[day] && schedule[day][slot] !== "") return alert("This slot is already taken.");
+    if (schedule[day] && (schedule[day][0] == user.name || schedule[day][1] == user.name || schedule[day][2] == user.name || schedule[day][3] == user.name))
+        return alert("You're already scheduled for this day.");
 
     try {
       const response = await fetch('http://localhost:3001/signup', {
