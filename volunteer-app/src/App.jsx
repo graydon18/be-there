@@ -66,23 +66,23 @@ function App() {
     }
 
     const confirmRegister = window.confirm(`Do you want to register yourself on ${day}`);
-        if (confirmRegister) {
-            try {
-                const response = await fetch('http://localhost:3001/signup', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ day, slot, name: user.name, username: user.username })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    setSchedule(data.schedule);
-                } else {
-                    alert(data.error);
-                }
-            } catch (error) {
-                console.error('Error signing up:', error);
-            }
+    if (confirmRegister) {
+      try {
+        const response = await fetch('http://localhost:3001/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ day, slot, name: user.name, username: user.username })
+        });
+        const data = await response.json();
+        if (data.success) {
+          setSchedule(data.schedule);
+        } else {
+          alert(data.error);
         }
+      } catch (error) {
+        console.error('Error signing up:', error);
+      }
+    }
   };
 
   const handleBackupButton = async (day, type) => {
@@ -240,30 +240,38 @@ function App() {
 
         <div className="button-columns">
           <div className="backup-driver">
-            {days.map(day => (
-              <motion.button
-                key={`driver-${day}`}
-                disabled={!isDriverScheduled(day)}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => handleBackupButton(day, "driver")}
-              >
-                Sign Up as a Backup Driver ({schedule[day]?.backupDrivers?.length || 0})
-              </motion.button>
-            ))}
+            {days.map(day => {
+              const isUserInDriverQueue = schedule[day]?.backupDrivers?.some(d => d.username === user.username);
+              return (
+                <motion.button
+                  key={`driver-${day}`}
+                  disabled={!isDriverScheduled(day)}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => handleBackupButton(day, "driver")}
+                  style={{ backgroundColor: isUserInDriverQueue ? 'crimson' : undefined }}
+                >
+                  Sign Up as a Backup Driver ({schedule[day]?.backupDrivers?.length || 0})
+                </motion.button>
+              );
+            })}
           </div>
           <div className="backup-packer">
-            {days.map(day => (
-              <motion.button
-                key={`packer-${day}`}
-                disabled={!arePackersScheduled(day)}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => handleBackupButton(day, "packer")}
-              >
-                Sign Up as a Backup Packer ({schedule[day]?.backupPackers?.length || 0})
-              </motion.button>
-            ))}
+            {days.map(day => {
+              const isUserInPackerQueue = schedule[day]?.backupPackers?.some(p => p.username === user.username);
+              return (
+                <motion.button
+                  key={`packer-${day}`}
+                  disabled={!arePackersScheduled(day)}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => handleBackupButton(day, "packer")}
+                  style={{ backgroundColor: isUserInPackerQueue ? 'crimson' : undefined }}
+                >
+                  Sign Up as a Backup Packer ({schedule[day]?.backupPackers?.length || 0})
+                </motion.button>
+              );
+            })}
           </div>
         </div>
       </div>
