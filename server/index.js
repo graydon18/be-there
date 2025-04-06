@@ -8,13 +8,13 @@ app.use(express.json());
 
 // In-memory schedule: 7 days, each with 6 slots
 let schedule = {
-  Monday: Array(6).fill(null),
-  Tuesday: Array(6).fill(null),
-  Wednesday: Array(6).fill(null),
-  Thursday: Array(6).fill(null),
-  Friday: Array(6).fill(null),
-  Saturday: Array(6).fill(null),
-  Sunday: Array(6).fill(null),
+  Monday: Array(4).fill(null),
+  Tuesday: Array(4).fill(null),
+  Wednesday: Array(4).fill(null),
+  Thursday: Array(4).fill(null),
+  Friday: Array(4).fill(null),
+  Saturday: Array(4).fill(null),
+  Sunday: Array(4).fill(null),
 };
 
 let users = [];
