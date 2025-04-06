@@ -84,6 +84,11 @@ td {
     cursor: pointer;
   }
 
+.italic {
+    font-style: italic;
+    color: #006a33
+}
+
 .button-columns {
     display: flex;
     flex-direction: row;

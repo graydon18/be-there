@@ -229,8 +229,9 @@ function App() {
                     whileHover={{ scale: 1.05 }}
                     onClick={() => handleSlotClick(day, slot)}
                     style={{ cursor: 'pointer' }}
+                    className={(!schedule[day] || !schedule[day].slots[slot]) ? "italic" : ""}
                   >
-                    {schedule[day] && schedule[day].slots[slot] ? schedule[day].slots[slot].name : '[Available]'}
+                    {schedule[day] && schedule[day].slots[slot] ? schedule[day].slots[slot].name : '[Available]'} 
                   </motion.td>
                 ))}
               </tr>
