@@ -31,9 +31,44 @@ function App() {
 
   const handleSlotClick = async (day, slot) => {
     if (!user) return alert("Please log in first.");
-    if (schedule[day] && schedule[day].slots[slot] !== null) return alert("This slot is already taken.");
-    if (schedule[day]?.slots?.some(slot => slot?.username === user.username)) return alert("You're already scheduled for this day.");
-
+  
+    const clickedSlot = schedule[day]?.slots?.[slot];
+  
+    // If slot is taken
+    if (clickedSlot !== null) {
+      // If it's the current user's slot
+      if (clickedSlot.username === user.username) {
+        const confirmDelete = window.confirm("Do you want to delete yourself from this slot?");
+        if (confirmDelete) {
+          try {
+            const response = await fetch('http://localhost:3001/slot', {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ day, slot, username: user.username })
+            });
+            const data = await response.json();
+            if (data.success) {
+              setSchedule(data.schedule);
+            } else {
+              alert(data.error);
+            }
+          } catch (error) {
+            console.error('Error deleting slot:', error);
+          }
+        }
+      } else {
+        // Someone else's slot
+        return alert("This slot is already taken.");
+      }
+      return;
+    }
+  
+    // Check if user already signed up for this day
+    if (schedule[day]?.slots?.some(s => s?.username === user.username)) {
+      return alert("You're already scheduled for this day.");
+    }
+  
+    // If slot is available, sign up
     try {
       const response = await fetch('http://localhost:3001/signup', {
         method: 'POST',
@@ -50,6 +85,7 @@ function App() {
       console.error('Error signing up:', error);
     }
   };
+  
 
   const handleBackupButton = async (day, type) => {
     try {

@@ -136,6 +136,28 @@ app.post("/signup-backup", (req, res) => {
     return res.json({ success: true, schedule });
 });
 
+// DELETE /slot
+app.delete("/slot", (req, res) => {
+    const { day, slot, username } = req.body;
+  
+    if (!day || slot === undefined || !username) {
+      return res.json({ success: false, error: "Invalid input." });
+    }
+  
+    const slotData = schedule[day]?.slots?.[slot];
+    if (!slotData) {
+      return res.json({ success: false, error: "Slot is already empty." });
+    }
+  
+    if (slotData.username !== username) {
+      return res.json({ success: false, error: "You can only delete your own slot." });
+    }
+  
+    schedule[day].slots[slot] = null;
+    return res.json({ success: true, schedule });
+  });
+
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
