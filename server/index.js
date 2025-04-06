@@ -24,7 +24,7 @@ app.get("/schedule", (req, res) => {
   res.json(schedule);
 });
 
-app.post("/login", (req, res) => {
+app.post("/register", (req, res) => {
     const { name, username } = req.body;
   
     if (!name || !username) {
@@ -38,6 +38,21 @@ app.post("/login", (req, res) => {
   
     users.push({ username, name });
     return res.json({ success: true, name, username });
+  });
+  
+  app.post("/login", (req, res) => {
+    const { username } = req.body;
+  
+    if (!username) {
+      return res.json({ success: false, error: "Username is required." });
+    }
+  
+    const user = users.find(u => u.username === username);
+    if (!user) {
+      return res.json({ success: false, error: "Username not found." });
+    }
+  
+    return res.json({ success: true, name: user.name, username: user.username });
   });
 
 // POST /signup

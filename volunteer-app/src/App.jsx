@@ -9,6 +9,7 @@ function App() {
   const [schedule, setSchedule] = useState({});
   const [loginForm, setLoginForm] = useState({ name: '', username: '' });
   const [loginError, setLoginError] = useState('');
+  const [isSignup, setIsSignup] = useState(false);
 
   const fetchSchedule = async () => {
     try {
@@ -22,6 +23,10 @@ function App() {
 
   useEffect(() => {
     fetchSchedule();
+    const storedUser = localStorage.getItem("be-there-user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
   }, []);
 
   const handleSlotClick = async (day, slot) => {
@@ -53,24 +58,30 @@ function App() {
 
   const isDriverScheduled = (day) => {
     return schedule[day] && schedule[day][0]; 
-   };
+  };
 
-   const arePackersScheduled = (day) => {
+  const arePackersScheduled = (day) => {
     return schedule[day] && schedule[day][1] && schedule[day][2] && schedule[day][3];
   };
 
-  const handleLoginSubmit = async (e) => {
+  const handleAuthSubmit = async (e) => {
     e.preventDefault();
     setLoginError('');
     try {
-      const res = await fetch('http://localhost:3001/login', {
+      const endpoint = isSignup ? 'register' : 'login';
+      const body = isSignup ? loginForm : { username: loginForm.username };
+
+      const res = await fetch(`http://localhost:3001/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(loginForm)
+        body: JSON.stringify(body)
       });
+
       const data = await res.json();
       if (data.success) {
-        setUser({ name: data.name, username: data.username });
+        const loggedInUser = { name: data.name, username: data.username };
+        setUser(loggedInUser);
+        localStorage.setItem("be-there-user", JSON.stringify(loggedInUser));
       } else {
         setLoginError(data.error);
       }
@@ -83,24 +94,32 @@ function App() {
     return (
       <div className="login-container">
         <h1>Be There</h1>
-        <h2 className="subheading">Please login with your username. If you are signing up, create a username for your account!</h2>
-        <form className="login-form" onSubmit={handleLoginSubmit}>
+        <h2 className="subheading">{isSignup ? "Create a new account" : "Login with your username"}</h2>
+        <form className="login-form" onSubmit={handleAuthSubmit}>
+          {isSignup && (
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={loginForm.name}
+              onChange={(e) => setLoginForm({ ...loginForm, name: e.target.value })}
+              required
+            />
+          )}
           <input
             type="text"
-            placeholder="Full Name"
-            value={loginForm.name}
-            onChange={(e) => setLoginForm({ ...loginForm, name: e.target.value })}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Username (must be unique)"
+            placeholder="Username"
             value={loginForm.username}
             onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
             required
           />
-          <button type="submit">Login</button>
+          <button type="submit">{isSignup ? "Sign Up" : "Login"}</button>
         </form>
+        <button onClick={() => {
+          setIsSignup(!isSignup);
+          setLoginError('');
+        }}>
+          {isSignup ? "Have an account? Log in" : "New user? Sign up"}
+        </button>
         {loginError && <p className="error">{loginError}</p>}
       </div>
     );
@@ -110,6 +129,17 @@ function App() {
     <div className="App">
       <h1>Be There</h1>
       <h2 className="subheading">Welcome {user.name}!</h2>
+      <button
+        onClick={() => {
+          localStorage.removeItem("be-there-user");
+          setUser(null);
+          setLoginForm({ name: '', username: '' });
+          setIsSignup(false);
+        }}
+        style={{ marginBottom: '10px' }}
+      >
+        Logout
+      </button>
       <div className="table-container">
       <table>
         <thead>
