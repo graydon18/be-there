@@ -85,23 +85,35 @@ app.post("/login", (req, res) => {
 
 // POST /signup
 app.post("/signup", (req, res) => {
-  const { day, slot, name, username } = req.body;
-
-  if (!day || slot === undefined || !name || !username) {
-    return res.json({ success: false, error: "Invalid input." });
-  }
-
-  if (!schedule[day] || slot < 0 || slot >= schedule[day].slots.length) {
-    return res.json({ success: false, error: "Invalid day or slot." });
-  }
-
-  if (schedule[day].slots[slot]) {
-    return res.json({ success: false, error: "Slot already taken." });
-  }
-
-  schedule[day].slots[slot] = { name: name, username: username };
-  return res.json({ success: true, schedule });
-});
+    const { day, slot, name, username } = req.body;
+  
+    if (!day || slot === undefined || !name || !username) {
+      return res.json({ success: false, error: "Invalid input." });
+    }
+  
+    if (!schedule[day] || slot < 0 || slot >= schedule[day].slots.length) {
+      return res.json({ success: false, error: "Invalid day or slot." });
+    }
+  
+    if (schedule[day].slots[slot]) {
+      return res.json({ success: false, error: "Slot already taken." });
+    }
+  
+    // ❗ Check if user is already in a backup queue for that day
+    const isInBackupQueue =
+      schedule[day].backupDrivers.some(u => u.username === username) ||
+      schedule[day].backupPackers.some(u => u.username === username);
+  
+    if (isInBackupQueue) {
+      return res.json({
+        success: false,
+        error: "You are already in a backup queue for today. Please remove yourself first."
+      });
+    }
+  
+    schedule[day].slots[slot] = { name: name, username: username };
+    return res.json({ success: true, schedule });
+  });
 
 app.post("/signup-backup", (req, res) => {
   const { day, type, name, username } = req.body;
