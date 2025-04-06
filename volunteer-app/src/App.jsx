@@ -191,8 +191,9 @@ function App() {
       transition={{ duration: 0.5 }}
     >
       <h1>Be There</h1>
+      <div className="welcome-user">
       <h2 className="subheading">Welcome {user.name}!</h2>
-      <motion.button
+      <motion.button className="logout"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => {
@@ -205,6 +206,7 @@ function App() {
       >
         Logout
       </motion.button>
+      </div>
       <div className="table-container">
         <table>
           <thead>

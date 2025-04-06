@@ -43,6 +43,17 @@ h1 {
     color: #006a33;
   }
 
+.welcome-user {
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    gap: 20px; 
+}
+
+.logout {
+    margin-top: -50px;
+}
+
 .table-container {
     display: flex;
     align-items: flex-start;
